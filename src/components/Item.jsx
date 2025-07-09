@@ -8,6 +8,7 @@ import {
 
 import { green } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
+import { formatRelative } from "date-fns";
 
 export default function Item({ item, remove, primary }) {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function Item({ item, remove, primary }) {
           >
             <TimeIcon fontSize="10" color="success" />
             <Typography variant="caption" sx={{ color: green[500] }}>
-              A few second ago
+              {formatRelative(item.created, new Date())}
             </Typography>
           </Box>
           <IconButton
@@ -56,7 +57,7 @@ export default function Item({ item, remove, primary }) {
           }}
         >
           <UserIcon fontSize="12" color="info" />
-          <Typography variant="caption">{item.name}</Typography>
+          <Typography variant="caption">{item.user.name}</Typography>
         </Box>
       </CardContent>
     </Card>

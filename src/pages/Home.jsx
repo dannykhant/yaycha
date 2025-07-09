@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Box } from "@mui/material";
 
@@ -10,11 +10,25 @@ import { useApp } from "../ThemedApp";
 export default function Home() {
   const { showForm, setGlobalMsg } = useApp();
 
-  const [data, setData] = useState([
-    { id: 3, content: "Yay, interesting.", name: "Chris" },
-    { id: 2, content: "React is fun.", name: "Bob" },
-    { id: 1, content: "Hello, World!", name: "Alice" },
-  ]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const api = import.meta.env.VITE_API;
+    fetch(`${api}/content/posts`)
+      .then(async (res) => {
+        if (res.ok) {
+          setData(await res.json());
+          setLoading(false);
+        } else {
+          setError(true);
+        }
+      })
+      .catch(() => {
+        setError(true);
+      });
+  }, []);
 
   const remove = (id) => {
     setData(data.filter((item) => item.id !== id));
@@ -26,6 +40,18 @@ export default function Home() {
     setData([{ id, content, name }, ...data]);
     setGlobalMsg("An item added");
   };
+
+  if (error) {
+    return (
+      <Box>
+        <Alert severity="warning">Cannot fetch data</Alert>
+      </Box>
+    );
+  }
+
+  if (loading) {
+    return <Box sx={{ textAlign: "center" }}>Loading...</Box>;
+  }
 
   return (
     <Box>
