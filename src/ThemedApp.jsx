@@ -9,9 +9,9 @@ import {
 
 import { deepPurple, grey } from "@mui/material/colors";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 import Template from "./Template";
-
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -58,6 +58,8 @@ const router = createBrowserRouter([
   },
 ]);
 
+export const queryClient = new QueryClient();
+
 export default function ThemedApp() {
   const [showDrawer, setShowDrawer] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -88,7 +90,9 @@ export default function ThemedApp() {
           setAuth,
         }}
       >
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
         <CssBaseline />
       </AppContext.Provider>
     </ThemeProvider>
